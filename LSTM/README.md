@@ -13,11 +13,6 @@ The LSTM introduces the concept of "gates," specifically:
 - **Input Gate**: Determines what new information is stored in the cell state.
 - **Output Gate**: Computes the output for the next step.
 
-### LSTM Model Architecture
-![LSTM model architecture](Graphics/LSTM.png)
-
-*Figure: LSTM model architecture, adapted from Kawakami (2008).*
-
 ## LSTM Equations
 The following equations define the functioning of an LSTM cell:
 
@@ -53,9 +48,15 @@ The following equations define the functioning of an LSTM cell:
 - **$\sigma$** and **$	anh$**: Activation functions
 
 ## References
-- Hochreiter & Schmidhuber (1997) - "Long Short-Term Memory"
-- Kawakami (2008) - "Supervised Sequence Labeling with Recurrent Neural Networks"
-- Additional references on **LSTM applications in EPF**: Xiong (2022), Li (2021), Shao (2021, 2022)
+- Hochreiter, Sepp and Jürgen Schmidhuber (1997). “Long short-term mem- ory”. In: Neural computation 9.8, pp. 1735–1780.
+- Kawakami, Kazuya (2008). “Supervised sequence labelling with recurrent neural networks”. PhD thesis. Technical University of Munich.
+  
+Additional references on **LSTM applications in EPF**:
+
+- Xiong, Xiaoping and Guohua Qing (2022). “A hybrid day-ahead electricity price forecasting framework based on time series”. In: Energy, p. 126099.
+- Li, Wei and Denis Mike Becker (2021). “Day-ahead electricity price predic- tion applying hybrid models of LSTM-based deep learning methods and feature selection algorithms under consideration of market coupling”. In: Energy 237, p. 121543.
+- Shao, Zhen, Qingru Zheng, Chen Liu, Shuangyan Gao, Gang Wang, and Yan Chu (2021). “A feature extraction-and ranking-based framework for electricity spot price forecasting using a hybrid deep neural network”. In: Electric Power Systems Research 200, p. 107453.
+- Shao, Zhen, Yudie Yang, Qingru Zheng, Kaile Zhou, Chen Liu, and Shanlin Yang (2022). “A pattern classification methodology for interval forecasts of short-term electricity prices based on hybrid deep neural networks: A comparative analysis”. In: Applied Energy 327, p. 120115.
 
 ## Usage
 This model is implemented in Python using TensorFlow/Keras. For installation and usage, see the full documentation in `LSTM/`.
