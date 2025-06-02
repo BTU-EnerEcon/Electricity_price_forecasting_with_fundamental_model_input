@@ -32,8 +32,8 @@ $setglobal Store  ""     # if "*" the storage functions excluded, if "" storage 
 $setglobal Reserv  ""    # if "*" the reservoir functions excluded, if "" reservoir functions included
 $setglobal Startup ""     # if "*" the startup functions excluded, if "" startup functions included
 $setglobal Flow   ""      # if "*" the trade excluded, if "" trade included
-$setglobal CHP    ""      # if "*" the trade excluded, if "" trade included
-$setglobal xDem   ""     # if "*" the demand increase excluded, if "" demand increase included
+$setglobal CHP   ""      # if "*" the trade excluded, if "" trade included
+$setglobal xDem  ""     # if "*" the demand increase excluded, if "" demand increase included
 $setglobal ConPow ""      # if "*" Control Power excluded, if "" Control Power included
 
 $ifthen "%Store%" == ""     $setglobal exc_Store "*"
@@ -52,23 +52,24 @@ $endif
 
 *#####################  DIRECTORIRY and FILE MANAGEMENT  #####################
 
-$setglobal YearonFocus "2017"
+$setglobal YearonFocus "2024"
 
 *Location of input files
 $setglobal datadir                data\
 $setglobal DataIn_yearly              InputData%YearonFocus%
-$setglobal DataIn_general             InputData_allyears
+$setglobal DataIn_general             InputData_allyears_2025
 
 *Location of output files
 $setglobal output_dir   output\
-$setglobal result       Results_year%YearonFocus%_all_-1225MW
+$setglobal result       Results_year%YearonFocus%_2
 
 set
-    daily_window  all days of the model horizon /day1*day374/
+    daily_window  all days of the model horizon /day1*day190/
 
-    t      all hours                       / t1*t8928  /
+    t      all hours                     /t4393*t8928/
 ;
-*t4536
+*t4393*t8928
+
 *#############################   DATA LOAD     ###############################
 
 $include 01_declare_parameters.gms
@@ -89,7 +90,6 @@ $include 03_loop.gms
 *#############################   results     #################################
 
 $include 04_aftermath.gms
-
 
 
 

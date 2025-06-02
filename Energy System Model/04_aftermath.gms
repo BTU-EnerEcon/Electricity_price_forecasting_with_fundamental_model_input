@@ -45,14 +45,14 @@ SecondaryReserve_neg(year_focus,month,day,hour,i)
   import_monthly(year_focus,month,n,nn)
 ;
 
-price(year_focus,month,day,hour,n)               = sum(daily_window, price_roll(year_focus,month,day,hour,n,daily_window)     );
+price(year_focus,month,day,hour,'DE')               = sum(daily_window, price_roll(year_focus,month,day,hour,'DE',daily_window)     );
 
-generation_all(year_focus,month,day,hour,n,i)      = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,i,daily_window) );
-generation_thermal(year_focus,month,day,hour,n,thermal)  = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,thermal,daily_window) );
-generation_gas(year_focus,month,day,hour,n,gas)    = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,gas,daily_window) );
-generation_coal(year_focus,month,day,hour,n,coal)  = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,coal,daily_window) );
-generation_oil(year_focus,month,day,hour,n,oil)    = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,oil,daily_window) );
-generation_biomass(year_focus,month,day,hour,n,biomass)    = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,biomass,daily_window) );
+*generation_all(year_focus,month,day,hour,n,i)      = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,i,daily_window) );
+*generation_thermal(year_focus,month,day,hour,n,thermal)  = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,thermal,daily_window) );
+*generation_gas(year_focus,month,day,hour,n,gas)    = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,gas,daily_window) );
+*generation_coal(year_focus,month,day,hour,n,coal)  = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,coal,daily_window) );
+*generation_oil(year_focus,month,day,hour,n,oil)    = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,oil,daily_window) );
+*generation_biomass(year_focus,month,day,hour,n,biomass)    = sum(daily_window, generation_all_roll(year_focus,month,day,hour,n,biomass,daily_window) );
 
 $ontext
 generation_all_monthly(year_focus,month,n,i)       = sum((day,hour), generation_all(year_focus,month,day,hour,n,i)    );
@@ -71,8 +71,8 @@ $offtext
 *         PSP_pump(year_focus,month,day,hour,n)            = sum(daily_window, PSP_pump_roll(year_focus,month,day,hour,n,daily_window) );
 *%Store%  PSP_charge(year_focus,month,day,hour,n)        = sum(daily_window, PSP_charge_roll(year_focus,month,day,hour,n,daily_window) );
 
-%xDem%   X_demand(year_focus,month,day,hour,n)   = sum(daily_window, X_demand_roll(year_focus,month,day,hour,n,daily_window) );
-         shedding(year_focus,month,day,hour,n)   = sum(daily_window, Shed_roll(year_focus,month,day,hour,n,daily_window) ) ;
+*%xDem%   X_demand(year_focus,month,day,hour,n)   = sum(daily_window, X_demand_roll(year_focus,month,day,hour,n,daily_window) );
+*         shedding(year_focus,month,day,hour,n)   = sum(daily_window, Shed_roll(year_focus,month,day,hour,n,daily_window) ) ;
 
 *%Startup% Pon_all(year_focus,month,day,hour,'DE',i)     = sum(daily_window, Pon_all_roll(year_focus,month,day,hour,i,daily_window) ) ;
 
@@ -96,13 +96,13 @@ EXECUTE_UNLOAD '%output_dir%%result%.gdx'    price
 *                , export, import
 *                , export_monthly, import_monthly
 *                 , generation_gas_monthly ,generation_lignite_monthly, generation_coal_monthly, generation_oil_monthly , generation_biowaste_monthly
-              , generation_thermal, generation_gas, generation_coal, generation_oil
+*              , generation_thermal, generation_gas, generation_coal, generation_oil
 *               , PrimaryReserve, SecondaryReserve_pos, SecondaryReserve_neg
 *              , storage_cluster_activity, Reservoir_activity
 *               , PSP_charge
 *               , PSP_Gen
-               , X_demand
-               , shedding
+*               , X_demand
+*               , shedding
 *                 , modelstats, solvestats
 *               , StLevel
 

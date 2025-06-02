@@ -52,24 +52,23 @@ $endif
 
 *#####################  DIRECTORIRY and FILE MANAGEMENT  #####################
 
-$setglobal YearonFocus "2019"
+$setglobal YearonFocus "2024"
 
 *Location of input files
 $setglobal datadir                data\
 $setglobal DataIn_yearly              InputData%YearonFocus%
-$setglobal DataIn_general             InputData_allyears
+$setglobal DataIn_general             InputData_allyears_2025
 
 *Location of output files
 $setglobal output_dir   output\
-$setglobal result       Results_year%YearonFocus%_all
+$setglobal result       Results_year%YearonFocus%_1
 
 set
-    daily_window  all days of the model horizon /day1*day374/
+    daily_window  all days of the model horizon /day1*day190/
 
-    t      all hours                       / t1*t8928  /
+    t      all hours                       / t1*t4536  /
 ;
 *t4536
-
 *#############################   DATA LOAD     ###############################
 
 $include 01_declare_parameters.gms

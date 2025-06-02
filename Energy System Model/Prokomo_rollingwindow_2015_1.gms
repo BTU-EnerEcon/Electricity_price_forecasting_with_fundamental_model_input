@@ -1,175 +1,94 @@
-*Location of intput files
+$ontext
+Dispatch model project ProKoMo
+
+LSEW BTU
+
+target:
+    price forecast for 24 hours of the next day
+
+method:
+    - rolling horizon including a time intervall before and after the forecasted day
+    - for storages a fixed (water)price is implemented
+    - data is uploaded by annual data sets
+    - years, months, days and hours are mapped
+    - UTC time is applied for all data
+    - data is uploaded only for the current year, all other years are de-activated
+
+
+CODE STANDARTS (to be defined !)
+    i              - major set
+    StorG(i)       - subset
+    lowercase      - parameter
+    UPPERCASE      - variable
+$offtext
+
+
+*#############################  DEFAULT OPTIONS  #############################
+$eolcom #
+
+$setglobal Before2015 "*"      # if "*" then outages included, if "" then constant availability factor
+
+$setglobal Store  ""     # if "*" the storage functions excluded, if "" storage functions included
+$setglobal Reserv  ""    # if "*" the reservoir functions excluded, if "" reservoir functions included
+$setglobal Startup ""     # if "*" the startup functions excluded, if "" startup functions included
+$setglobal Flow   ""      # if "*" the trade excluded, if "" trade included
+$setglobal CHP   ""      # if "*" the trade excluded, if "" trade included
+$setglobal xDem  ""     # if "*" the demand increase excluded, if "" demand increase included
+$setglobal ConPow ""      # if "*" Control Power excluded, if "" Control Power included
+
+$ifthen "%Store%" == ""     $setglobal exc_Store "*"
+$else                       $setglobal exc_Store ""
+$endif
+
+$ifthen "%Reserv%" == ""     $setglobal exc_Reserv "*"
+$else                       $setglobal exc_Reserv ""
+$endif
+
+$ifthen "%Startup%" == ""   $setglobal exc_Startup "*"
+$else                       $setglobal exc_Startup ""
+$endif
+
+
+
+*#####################  DIRECTORIRY and FILE MANAGEMENT  #####################
+
+$setglobal YearonFocus "2015"
+
+*Location of input files
 $setglobal datadir                data\
-$setglobal DataIn                 InputData
+$setglobal DataIn_yearly              InputData%YearonFocus%
+$setglobal DataIn_general             InputData_allyears
 
 *Location of output files
-$setglobal output_dir   results\
-$setglobal result   naive
+$setglobal output_dir   output\
+$setglobal result       Results_year%YearonFocus%_1
 
-sets
-s   storage  /PSP,Bat_1,Bat_2/
-t   time    /t1*t52608/
-h   hour    /h1*h24/
+set
+    daily_window  all days of the model horizon /day1*day189/
 
-
-*t17544
-scen price scenario /naive/
-map_TH(t,h) time mapping
-tlast(t)
-hlast(h)
+    t      all hours                       / t1*t4536  /
 ;
+*t4584
+*#############################   DATA LOAD     ###############################
 
-tlast(t)  = yes$(ord(t) eq card(t));
-hlast(h)  = yes$(ord(h) eq card(h));
+$include 01_declare_parameters.gms
 
-scalars
-cap     turbine_pumping capacity        /1/
-;
-parameters
-priceup upload electricity prices
-price(t) wholesale electricity price [EUR per MWh]
-real_price(t) actual market price [EUR per MWh]
+*#############################   REPORTING INPUT ###############################
 
-eta(s)     efficiency of a storage cycle
-            /PSP   0.75
-             Bat_1 0.8
-             Bat_2 0.9 /
-ecr(s)     energy capacity ratio
-            /PSP   7
-             Bat_1 3
-             Bat_2 1 /
-;
+*execute_unload '%datadir%Input_final.gdx'
+*$stop
 
-*Data Upload
-$onecho > Import.txt
-*    set=scen           rng=price_scenarios!B2:B100    rdim=1 
-    set=map_TH         rng=timemap!B2                 rdim=2
-    par=priceup        rng=prices!B2:Z53000           rdim=1 cdim=1
-    
-$offecho
+*#############################   MODEL     #####################################
 
-$onUNDF
-$call GDXXRW I=%datadir%%DataIn%.xlsx O=%datadir%%DataIn%.gdx cmerge=1 @Import.txt
-$gdxin %datadir%%DataIn%.gdx
-*$LOAD scen
-$LOAD map_TH
-$LOAD priceup
-$gdxin
-$offUNDF
+$include 02_MODEL.gms
 
+*#############################   SOLVING     ###################################
 
+$include 03_loop.gms
 
-real_price(t) = priceup(t,'Real Price') ;
+*#############################   results     #################################
 
-
-Variable
-Profit  Profit of the storage unit [EUR]
-;
-
-Positive variable
-G(s,t)       electricity generation by storage   [MWh per h]
-Charge(s,t)  charging storage (electricity consumption) [MWh per h]
-SL(s,t)      Storage level [MWh]
-;
-
-Equations
-    
-Obj         Objective Function maximizing profits
-StorageLevel     Storage level
-Store_Max   maximum storage generation and charging [MWh per h]
-Gen_Max     generation is lower than storage level
-SL_Max      maximum storage level
-SL_hfirst
-SL_hlast
-
-;
-
-Obj..   Profit =E= sum((s,t), (G(s,t)-Charge(s,t))*price(t) )
-;
-Store_Max(s,t)..    G(s,t)+ Charge(s,t) =L= cap
-;
-Gen_Max(s,t)..      G(s,t) =L= SL(s,t-1)
-;
-SL_Max(s,t)..    SL(s,t) =L= cap * ecr(s)
-;
-StorageLevel(s,t,h)$(map_TH(t,h) and ord(h)>1)..        SL(s,t) =E= SL(s,t-1) - G(s,t) + Charge(s,t)*eta(s)
-;
-*$(ord(t)>=2)
-
-
-SL_hfirst(s,t)$map_TH(t,'h1')..       SL(s,t) =E= 0* cap * ecr(s) + Charge(s,t)*eta(s) - G(s,t)
-;
-SL_hlast(s,t)$map_TH(t,'h24')..       SL(s,t) =E= 0* cap * ecr(s)
-;
-
-
-
-model Storage_Profit /all/
-;
-
-
-Parameter
-Profit_PSP(*)
-Profit_Bat_1(*)
-Profit_Bat_2(*)
-
-Generation(t,s,*) 
-Charging(t,s,*)   
-StoreLevel(t,s,*)
-price_el(t,*)
-;
-scalar
-x
-;
-
-
-loop(scen,
-
-x = ord(scen)   ;
-price(t) =  priceup(t-24,"Real Price") ;
-
-solve Storage_Profit using LP maximizing Profit
-;
-
-Profit_PSP(scen)      = sum(t, (G.l('PSP',t)-Charge.l('PSP',t))*real_price(t) ) ;
-Profit_Bat_1(scen)    = sum(t, (G.l('Bat_1',t)-Charge.l('Bat_1',t))*real_price(t) ) ;
-Profit_Bat_2(scen)    = sum(t, (G.l('Bat_2',t)-Charge.l('Bat_2',t))*real_price(t) ) ;
-
-Generation(t,s,scen)   = G.l(s,t) ;
-Charging(t,s,scen)     = Charge.l(s,t)    ;
-StoreLevel(t,s,scen)   = SL.l(s,t)  ;
-
-price_el(t,scen)    = price(t)  ; 
-
-)
-
-
-EXECUTE_UNLOAD '%output_dir%%result%.gdx'    
-
-;
-
-$onecho >out.tmp
-
-         par=Profit_PSP                     rng=Profit!A3:B30      rdim=1 
-         par=Profit_Bat_1                   rng=Profit!D3:E30      rdim=1 
-         par=Profit_Bat_2                   rng=Profit!G3:H30      rdim=1 
-         par=Generation                   rng=G!A1             rdim=1 cdim=2
-         par=Charging                     rng=Charge!A1        rdim=1 cdim=2
-         par=StoreLevel                   rng=SL!A1            rdim=1 cdim=2
-         par=price_el                     rng=price!A1         rdim=1            
-
-*         par=modelstats                    rng=stats!A2:B9900     rdim=1 cdim=0
-*         par=solvestats                    rng=stats!D2:E9900     rdim=1 cdim=0
-
-$offecho
-
-execute "XLSTALK -c    %output_dir%%result%.xlsx" ;
-
-EXECUTE 'gdxxrw %output_dir%%result%.gdx o=%output_dir%%result%.xlsx EpsOut=0 @out.tmp'
-;
-
-
-
+$include 04_aftermath.gms
 
 
 

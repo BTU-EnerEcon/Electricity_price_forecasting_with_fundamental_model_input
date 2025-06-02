@@ -34,9 +34,9 @@ loop(daily_window,
 
 solve ProKoMo using LP minimizing COSTS ;
 
-         price_roll(year_focus,month,day,hour,n,daily_window)      =  sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), energy_balance.M(n,t))*scaling_objective*(-1) ;
+         price_roll(year_focus,month,day,hour,'DE',daily_window)      =  sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), energy_balance.M('DE',t))*scaling_objective*(-1) ;
 
-         generation_all_roll(year_focus,month,day,hour,'DE',i,daily_window) = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), G.l(i,'DE',t)) ;
+*         generation_all_roll(year_focus,month,day,hour,'DE',i,daily_window) = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), G.l(i,'DE',t)) ;
 *         generation_all_roll_monthly(year_focus,month,n,i,daily_window) = sum( t$(map_YMT(year_focus,month,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), G.l(i,n,t)) ;
 
 *%Startup%     Pon_all_roll(year_focus,month,day,hour,thermal,daily_window)       = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), P_on.l(thermal,'DE',t)) ;
@@ -49,8 +49,8 @@ solve ProKoMo using LP minimizing COSTS ;
 *         PSP_pump_roll(year_focus,month,day,hour,'DE',daily_window) = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up), sum( StorageCluster, cap_PSP_cluster('DE',StorageCluster,t) * (1-share_PSP_daily) * 0.8 - pump.l (StorageCluster,'DE',t) ) ) ;
 *%Store%  PSP_gen_roll(year_focus,month,day,hour,'DE',daily_window) = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  G.l('PSP','DE',t) )  ;
 *%Store%  PSP_charge_roll(year_focus,month,day,hour,'DE',daily_window) = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  Charge.l('DE',t) )  ;
-%xDem%   X_demand_roll(year_focus,month,day,hour,n,daily_window)   = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  X_dem.l(n,t) )  ;
-             Shed_roll(year_focus,month,day,hour,n,daily_window)   = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  Shed.l(n,t) )  ;
+*%xDem%   X_demand_roll(year_focus,month,day,hour,n,daily_window)   = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  X_dem.l(n,t) )  ;
+*             Shed_roll(year_focus,month,day,hour,n,daily_window)   = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  Shed.l(n,t) )  ;
 
 
 *%Flow%   export_roll(year_focus,month,day,hour,'DE',nn,daily_window)   = sum( t$(map_YMDHT(year_focus,month,day,hour,t)and ord(t)>=x_focus and ord(t)<= x_focus_up),  flow.l('DE',nn,t) )  ;

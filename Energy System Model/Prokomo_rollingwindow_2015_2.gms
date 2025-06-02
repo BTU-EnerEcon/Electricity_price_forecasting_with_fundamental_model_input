@@ -60,7 +60,7 @@ $setglobal DataIn_yearly              InputData%YearonFocus%
 $setglobal DataIn_general             InputData_allyears
 
 *Location of output files
-$setglobal output_dir   output_actualLoad\
+$setglobal output_dir   output\
 $setglobal result       Results_year%YearonFocus%_2
 
 set

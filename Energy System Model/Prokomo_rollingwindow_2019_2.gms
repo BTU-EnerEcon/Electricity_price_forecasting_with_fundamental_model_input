@@ -61,7 +61,7 @@ $setglobal DataIn_general             InputData_allyears
 
 *Location of output files
 $setglobal output_dir   output\
-$setglobal result       Results_year%YearonFocus%_2_+1225MW
+$setglobal result       Results_year%YearonFocus%_2
 
 set
     daily_window  all days of the model horizon /day1*day190/
