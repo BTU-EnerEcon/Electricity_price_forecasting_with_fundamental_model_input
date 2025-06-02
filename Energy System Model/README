@@ -1,1 +1,4 @@
-
+1.      Place all the Code files and the project file in a folder/repository
+2.      In the folder/repository you choose for step 1, you add two sub-folders, “data” and “output”. The data folder contains all input data files, the output folder will contain your results.
+3.      For each half year you need to run the codes 'ProKoMo_rollingwindow_20xx_x'. This is due to computational limitations.
+4.      You will receive resulting prices for each half year.
